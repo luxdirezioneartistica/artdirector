@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUX — Studio AI di contenuti visivi</title>
+<meta name="description" content="LUX è uno studio AI. Costruiamo campagne visive per il tuo prodotto, controllando ogni scena.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#111008;
+    --ink-2:#17150d;
+    --paper:#f1ede2;
+    --paper-dim:#c9c4b4;
+    --line:#3a3626;
+    --focus:#7fe8d4;
+    --focus-dim:#4f9c8f;
+    --amber:#e8c15f;
+    --gap:clamp(20px, 4vw, 64px);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--focus); color:var(--ink);}
+  a{color:inherit;}
+  img{display:block; max-width:100%;}
+
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    line-height:1.05;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    font-size:11px;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 var(--gap);}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px var(--gap);
+    mix-blend-mode:difference;
+  }
+  .logo{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; letter-spacing:0.12em;}
+  nav a{
+    margin-left:28px; text-decoration:none; font-size:13px;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:0.04em;
+    opacity:0.85;
+  }
+  nav a:hover{opacity:1;}
+  .nav-links{display:flex;}
+  @media(max-width:720px){ .nav-links{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+    padding:140px var(--gap) 80px;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size:64px 64px;
+    pointer-events:none;
+  }
+  .eyebrow{
+    color:var(--focus); margin-bottom:22px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; background:var(--focus); border-radius:50%; box-shadow:0 0 12px var(--focus);}
+  .hero h1{
+    font-size:clamp(2.6rem, 7vw, 5.6rem);
+    max-width:14ch;
+  }
+  .hero h1 em{
+    font-style:normal; color:var(--focus);
+  }
+  .hero p{
+    max-width:46ch; margin-top:26px; font-size:clamp(1rem,1.6vw,1.2rem); color:var(--paper-dim);
+  }
+  .hero-cta{
+    display:flex; gap:16px; margin-top:42px; flex-wrap:wrap;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:15px 26px; font-family:'IBM Plex Mono',monospace; font-size:13px;
+    letter-spacing:0.04em; text-decoration:none; border-radius:2px;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn-primary{ background:var(--focus); color:var(--ink); font-weight:500;}
+  .btn-primary:hover{ transform:translateY(-2px); }
+  .btn-ghost{ border:1px solid var(--line); color:var(--paper);}
+  .btn-ghost:hover{ border-color:var(--focus); color:var(--focus);}
+
+  .frame-corner{position:absolute; width:22px; height:22px; border-color:var(--focus);}
+  .frame-corner.tl{top:0; left:0; border-top:2px solid; border-left:2px solid;}
+  .frame-corner.tr{top:0; right:0; border-top:2px solid; border-right:2px solid;}
+  .frame-corner.bl{bottom:0; left:0; border-bottom:2px solid; border-left:2px solid;}
+  .frame-corner.br{bottom:0; right:0; border-bottom:2px solid; border-right:2px solid;}
+
+  .framed{position:relative; padding:6px;}
+  .framed img{width:100%; height:100%; object-fit:cover; filter:saturate(0.92) contrast(1.02);}
+
+  /* ---------- SECTION shell ---------- */
+  section{padding:110px 0; border-top:1px solid var(--line);}
+  .section-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    gap:24px; margin-bottom:56px; flex-wrap:wrap;
+  }
+  .section-head .mono{color:var(--focus);}
+  .section-head h2{font-size:clamp(1.8rem,4vw,2.7rem); max-width:16ch;}
+  .section-head p{max-width:38ch; color:var(--paper-dim); font-size:15px;}
+
+  /* ---------- COSA FACCIAMO ---------- */
+  .grid-2{display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:center;}
+  @media(max-width:860px){ .grid-2{grid-template-columns:1fr;} }
+  .lede{font-size:clamp(1.15rem,2.2vw,1.5rem); font-family:'Space Grotesk',sans-serif; font-weight:500; max-width:24ch;}
+  .body-copy{margin-top:22px; color:var(--paper-dim); max-width:52ch;}
+  .body-copy + .body-copy{margin-top:14px;}
+
+  /* ---------- IL CONTROLLO ---------- */
+  .control-list{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); margin-top:8px;}
+  .control-item{background:var(--ink); padding:34px 28px;}
+  @media(max-width:760px){ .control-list{grid-template-columns:1fr;} }
+  .control-item .num{font-family:'IBM Plex Mono',monospace; color:var(--focus-dim); font-size:12px; letter-spacing:0.1em;}
+  .control-item h3{font-size:1.15rem; margin-top:14px; font-weight:600;}
+  .control-item p{margin-top:10px; color:var(--paper-dim); font-size:14.5px;}
+
+  /* ---------- COME FUNZIONA ---------- */
+  .steps{margin-top:8px;}
+  .step{
+    display:grid; grid-template-columns:64px 1fr; gap:26px;
+    padding:26px 0; border-top:1px solid var(--line);
+  }
+  .step:first-child{border-top:none;}
+  .step .n{font-family:'IBM Plex Mono',monospace; color:var(--focus); font-size:14px; padding-top:4px;}
+  .step h3{font-size:1.1rem; font-weight:600;}
+  .step p{margin-top:6px; color:var(--paper-dim); font-size:14.5px; max-width:56ch;}
+
+  /* ---------- SERVIZI ---------- */
+  .service-card{
+    border:1px solid var(--line); padding:40px; position:relative;
+    background:linear-gradient(180deg, rgba(127,232,212,0.03), transparent);
+  }
+  .service-card .tag{color:var(--focus);}
+  .service-card h3{font-size:1.9rem; margin-top:14px;}
+  .service-list{margin-top:26px; display:grid; grid-template-columns:repeat(2,1fr); gap:10px 30px;}
+  @media(max-width:640px){ .service-list{grid-template-columns:1fr;} }
+  .service-list div{
+    display:flex; gap:10px; font-size:14.5px; color:var(--paper-dim);
+    padding-bottom:10px; border-bottom:1px solid var(--line);
+  }
+  .service-list div::before{content:"—"; color:var(--focus-dim);}
+  .service-note{margin-top:28px; font-size:14px; color:var(--paper-dim); font-style:italic;}
+  .service-foot{
+    margin-top:30px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+  }
+
+  /* ---------- VOLTI ---------- */
+  .volti{display:grid; grid-template-columns:repeat(2,1fr); gap:28px;}
+  @media(max-width:760px){ .volti{grid-template-columns:1fr;} }
+  .volto-card .framed{aspect-ratio:4/5;}
+  .volto-meta{display:flex; justify-content:space-between; margin-top:16px; align-items:baseline;}
+  .volto-meta h3{font-size:1.3rem;}
+  .volto-meta span{color:var(--focus-dim);}
+  .volto-note{margin-top:34px; color:var(--paper-dim); font-size:14.5px; max-width:60ch;}
+
+  /* ---------- MATERIA strip ---------- */
+  .strip{display:grid; grid-template-columns:1fr 1fr; gap:2px;}
+  @media(max-width:760px){ .strip{grid-template-columns:1fr;} }
+  .strip .cell{position:relative; aspect-ratio:4/3; overflow:hidden;}
+  .strip .cell img{width:100%; height:100%; object-fit:cover; filter:saturate(0.9);}
+  .strip .cell .cap{
+    position:absolute; left:20px; bottom:18px; z-index:2;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.06em;
+    color:var(--focus); text-transform:uppercase;
+  }
+  .strip .cell::after{content:""; position:absolute; inset:0; background:linear-gradient(to top, rgba(10,9,5,0.75), transparent 45%);}
+
+  /* ---------- CHIUSURA / CONTATTI ---------- */
+  .closer{padding:130px 0; text-align:center; border-top:1px solid var(--line);}
+  .closer h2{font-size:clamp(2rem,5vw,3.4rem); max-width:16ch; margin:0 auto;}
+  .closer p{margin-top:20px; color:var(--paper-dim); max-width:44ch; margin-inline:auto;}
+  .closer .hero-cta{justify-content:center; margin-top:38px;}
+
+  footer{
+    border-top:1px solid var(--line); padding:34px var(--gap);
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;
+  }
+  footer .mono{color:var(--paper-dim);}
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--focus);}
+
+  [data-reveal]{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease;}
+  [data-reveal].in{opacity:1; transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    [data-reveal]{opacity:1; transform:none; transition:none;}
+    html{scroll-behavior:auto;}
+  }
+  a:focus-visible, .btn:focus-visible{outline:2px solid var(--focus); outline-offset:3px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">LUX</div>
+  <div class="nav-links">
+    <a href="#metodo">Metodo</a>
+    <a href="#servizi">Servizi</a>
+    <a href="#volti">Volti</a>
+    <a href="#contatti">Contatti</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap" style="position:relative;">
+    <p class="eyebrow mono">Studio AI · Contenuti visivi</p>
+    <h1>Campagne <em>reali</em><br>per il tuo brand.</h1>
+    <p>Costruiamo il tuo prodotto in scena, controllando ogni dettaglio — luce, inquadratura, coerenza. La qualità di una produzione vera, in una frazione del tempo e del costo.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#contatti">Prenota la consulenza gratuita</a>
+      <a class="btn btn-ghost" href="#metodo">Come funziona</a>
+    </div>
+  </div>
+</section>
+
+<section id="cosa-facciamo">
+  <div class="wrap">
+    <div class="grid-2" data-reveal>
+      <div>
+        <p class="mono" style="color:var(--focus); margin-bottom:18px;">Cosa facciamo</p>
+        <p class="lede">Il tuo prodotto resta il tuo, intatto. Il mondo attorno lo costruiamo noi — quasi interamente con l'intelligenza artificiale.</p>
+        <p class="body-copy">Ti consegniamo il materiale pronto da pubblicare: social, e-commerce, presenza online. Non gestiamo i tuoi canali e non compriamo pubblicità — costruiamo il materiale e te lo mettiamo in mano.</p>
+        <p class="body-copy">Lavoriamo con i brand che hanno un buon prodotto e contenuti che non lo raccontano ancora al livello che meritano.</p>
+      </div>
+      <div class="framed">
+        <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+        <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+        <img src="img/alba.jpg" alt="Campagna LUX — capo in movimento, costruito digitalmente">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="controllo">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="mono">Il differenziatore</p>
+        <h2>Non un generatore. Uno studio che controlla ogni scena.</h2>
+      </div>
+      <p>Oggi "uso l'AI" lo può dire chiunque apra uno strumento gratuito. La differenza è cosa succede dopo.</p>
+    </div>
+    <div class="control-list" data-reveal>
+      <div class="control-item">
+        <p class="num">01 — Luce</p>
+        <h3>Ogni sorgente, decisa</h3>
+        <p>Direzione, temperatura, morbidezza: la luce di ogni scena è una scelta, non un caso.</p>
+      </div>
+      <div class="control-item">
+        <p class="num">02 — Inquadratura</p>
+        <h3>Composizione costruita</h3>
+        <p>Ottica, distanza, taglio: ogni immagine è composta con un criterio, non generata a caso.</p>
+      </div>
+      <div class="control-item">
+        <p class="num">03 — Coerenza</p>
+        <h3>Il tuo prodotto, sempre uguale</h3>
+        <p>Il tuo prodotto resta identico a sé stesso in ogni scena della campagna — qualunque cosa sia.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="metodo">
+  <div class="wrap">
+    <div class="grid-2" data-reveal>
+      <div>
+        <p class="mono" style="color:var(--focus); margin-bottom:18px;">Come funziona</p>
+        <h2 style="font-size:clamp(1.8rem,4vw,2.6rem); max-width:14ch;">Il tuo mondo, non un modello preconfezionato.</h2>
+        <div class="steps">
+          <div class="step">
+            <span class="n">01</span>
+            <div><h3>Consulenza gratuita</h3><p>Guardiamo insieme il tuo prodotto e valutiamo come costruire la campagna.</p></div>
+          </div>
+          <div class="step">
+            <span class="n">02</span>
+            <div><h3>Il materiale</h3><p>Ci mandi le foto del tuo prodotto, o lo fotografiamo insieme.</p></div>
+          </div>
+          <div class="step">
+            <span class="n">03</span>
+            <div><h3>Costruzione</h3><p>Costruiamo i contenuti e te li presentiamo — due giri di revisione inclusi.</p></div>
+          </div>
+          <div class="step">
+            <span class="n">04</span>
+            <div><h3>Consegna</h3><p>Ricevi i file finali, pronti per la pubblicazione.</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="framed" style="align-self:stretch;">
+        <span class="frame-corner tl"></span><span class="frame-corner tr"></span>
+        <span class="frame-corner bl"></span><span class="frame-corner br"></span>
+        <img src="img/marco2.jpg" alt="Campagna LUX — capo in scena, controllo di luce e composizione" style="height:100%;">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="materia">
+  <div class="strip" data-reveal>
+    <div class="cell">
+      <img src="img/marco1.jpg" alt="Dettaglio prodotto — coerenza in ogni scena">
+      <span class="cap">Il prodotto, protagonista</span>
+    </div>
+    <div class="cell">
+      <img src="img/macro.jpg" alt="Macro pelle — realismo nel dettaglio">
+      <span class="cap">La materia, intatta</span>
+    </div>
+  </div>
+</section>
+
+<section id="servizi">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="mono">Servizi</p>
+        <h2>Cosa ricevi</h2>
+      </div>
+      <p>Un servizio, oggi definito nel dettaglio. Gli altri si aggiungono a breve.</p>
+    </div>
+    <div class="service-card" data-reveal>
+      <p class="mono tag">Il servizio principale</p>
+      <h3>Campagna Visiva</h3>
+      <p class="body-copy" style="margin-top:14px;">Il tuo prodotto, una campagna completa, pronta da pubblicare.</p>
+      <div class="service-list">
+        <div>6 contenuti (formato 3:4)</div>
+        <div>2 Reel (15–30 secondi)</div>
+        <div>Stories, definite in produzione</div>
+        <div>Volto LUX incluso, se serve</div>
+        <div>2 giri di revisione</div>
+        <div>File pronti per la pubblicazione</div>
+      </div>
+      <p class="service-note">Consigliamo tre uscite a settimana — la cadenza resta comunque una tua scelta.</p>
+      <div class="service-foot">
+        <span class="mono" style="color:var(--focus-dim);">Prezzo definito in consulenza</span>
+        <a class="btn btn-ghost" href="#contatti">Richiedi la consulenza</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="volti">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <div>
+        <p class="mono">Le presenze</p>
+        <h2>I Volti</h2>
+      </div>
+      <p>Identità create digitalmente, su misura. Nessun calendario, nessun contratto.</p>
+    </div>
+    <div class="volti" data-reveal>
+      <div class="volto-card">
+        <div class="framed"><img src="img/alba.jpg" alt="Alba — Volto LUX"></div>
+        <div class="volto-meta"><h3>Alba</h3><span class="mono">Volto LUX</span></div>
+      </div>
+      <div class="volto-card">
+        <div class="framed"><img src="img/marco1.jpg" alt="Marco — Volto LUX"></div>
+        <div class="volto-meta"><h3>Marco</h3><span class="mono">Volto LUX</span></div>
+      </div>
+    </div>
+    <p class="volto-note">Su richiesta, e a carico del cliente, puoi scegliere anche una persona reale al posto di un Volto LUX — un percorso che stiamo mettendo a punto con i primi brand interessati.</p>
+  </div>
+</section>
+
+<section class="closer" id="contatti">
+  <div class="wrap">
+    <p class="mono" style="color:var(--focus); margin-bottom:18px;">Per chi lavoriamo</p>
+    <h2>Se in queste pagine hai riconosciuto il tuo brand, scrivici.</h2>
+    <p>Non poniamo limiti di settore: il criterio è avere un prodotto vero e la voglia di mostrarlo al livello che merita. Raccontacelo, lo valutiamo insieme in consulenza gratuita.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="mailto:luxdirezioneartistica@gmail.com">luxdirezioneartistica@gmail.com</a>
+      <a class="btn btn-ghost" href="https://instagram.com/lux.artdirector" target="_blank" rel="noopener">@lux.artdirector</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="mono">LUX — Studio AI di contenuti visivi</span>
+  <span class="mono" style="opacity:0.5;">Casarano</span>
+  <span class="mono">© 2026</span>
+</footer>
+
+<script>
+  const els = document.querySelectorAll('[data-reveal]');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.15});
+  els.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
